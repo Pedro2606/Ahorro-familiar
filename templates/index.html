@@ -22,7 +22,7 @@
 <h3>📜 Historial</h3>
 <ul>
     {% for a in ahorros %}
-        <li>{{ a.fecha }} - {{ a.nombre }} - ${{ a.monto }}</li>
+        <li>{{ a.fecha.split(" ")[0] }} - {{ a.nombre }} - ${{ a.monto }}</li>
     {% endfor %}
 </ul>
 
