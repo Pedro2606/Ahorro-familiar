@@ -1,65 +1,37 @@
 from flask import Flask, render_template, request, redirect
-import sqlite3
+import requests
 from datetime import datetime
 
 app = Flask(__name__)
 
-# ---------- BASE DE DATOS ----------
-def get_db_connection():
-    conn = sqlite3.connect("ahorros.db")
-    conn.row_factory = sqlite3.Row
-    return conn
-
-def init_db():
-    conn = get_db_connection()
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS ahorros (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            monto REAL NOT NULL,
-            fecha TEXT NOT NULL
-        )
-    """)
-    conn.commit()
-    conn.close()
-
-init_db()
-# ----------------------------------
+SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbzWBl4YmveBKCHRLXWh9RAbmedCRd7f5z8pPncMjCQz4ictUpukyc1ZiQzbm4IDHU8MGw/exec"
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    conn = get_db_connection()
-
     if request.method == "POST":
         nombre = request.form["nombre"].strip()
         monto = float(request.form["monto"])
 
         if not nombre or monto <= 0:
-            conn.close()
             return redirect("/")
 
-        fecha = datetime.now().strftime("%d/%m/%Y")
+        data = {
+            "fecha": datetime.now().strftime("%d/%m/%Y"),
+            "nombre": nombre,
+            "monto": monto
+        }
 
-        conn.execute(
-            "INSERT INTO ahorros (nombre, monto, fecha) VALUES (?, ?, ?)",
-            (nombre, monto, fecha)
-        )
-        conn.commit()
-        conn.close()
+        requests.post(SHEETS_API_URL, json=data)
         return redirect("/")
 
-    ahorros = conn.execute("SELECT * FROM ahorros").fetchall()
+    response = requests.get(SHEETS_API_URL)
+    ahorros = response.json()
 
-    # Total general
     total = sum(a["monto"] for a in ahorros)
 
-    # Total por persona
     por_persona = {}
     for a in ahorros:
-        nombre = a["nombre"]
-        por_persona[nombre] = por_persona.get(nombre, 0) + a["monto"]
-
-    conn.close()
+        por_persona[a["nombre"]] = por_persona.get(a["nombre"], 0) + a["monto"]
 
     return render_template(
         "index.html",
@@ -68,6 +40,6 @@ def index():
         por_persona=por_persona
     )
 
-
 if __name__ == "__main__":
     app.run()
+
