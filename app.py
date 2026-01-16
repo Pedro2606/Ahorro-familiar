@@ -18,6 +18,7 @@ def borrar(id):
     requests.delete(SHEETS_API_URL, params=params)
     return redirect("/")
 
+@app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
         nombre = request.form["nombre"].strip()
