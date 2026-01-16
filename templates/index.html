@@ -4,37 +4,94 @@
     <meta charset="UTF-8">
     <title>Ahorro Familiar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: auto;
+            padding: 16px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            background: #2ecc71;
+            border: none;
+            color: white;
+            border-radius: 8px;
+        }
+
+        button:hover {
+            background: #27ae60;
+        }
+
+        ul {
+            padding-left: 18px;
+        }
+    </style>
 </head>
 <body>
 
-<h2>💰 Ahorro Familiar</h2>
+<div class="container">
 
-<form method="post">
-    <input type="text" name="nombre" placeholder="Tu nombre" required><br><br>
-    <input type="number" name="monto" placeholder="Monto" required><br><br>
-    <button type="submit">Guardar ahorro</button>
-</form>
+    <h2>💰 Ahorro Familiar</h2>
 
-<hr>
+    <div class="card">
+        <form method="post">
+            <input type="text" name="nombre" placeholder="Tu nombre" required>
+            <input type="number" name="monto" placeholder="Monto ahorrado" required>
+            <button type="submit">Guardar ahorro</button>
+        </form>
+    </div>
 
-<h3>📊 Total general: ${{ total }}</h3>
+    <div class="card">
+        <h3>📊 Total general</h3>
+        <strong>${{ total }}</strong>
+    </div>
 
-<h3>📜 Historial</h3>
-<ul>
-    {% for a in ahorros %}
-        <li>{{ a.fecha.split(" ")[0] }} - {{ a.nombre }} - ${{ a.monto }}</li>
-    {% endfor %}
-</ul>
+    <div class="card">
+        <h3>👥 Ahorro por persona</h3>
+        <ul>
+            {% for nombre, monto in por_persona.items() %}
+                <li>{{ nombre }}: ${{ monto }}</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-<h3>👥 Ahorro por persona</h3>
-<ul>
-    {% for nombre, monto in por_persona.items() %}
-        <li>{{ nombre }}: ${{ monto }}</li>
-    {% endfor %}
-</ul>
+    <div class="card">
+        <h3>📜 Historial</h3>
+        <ul>
+            {% for a in ahorros %}
+                <li>{{ a.fecha.split("T")[0] }} - {{ a.nombre }} - ${{ a.monto }}</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-
+</div>
 
 </body>
 </html>
-
