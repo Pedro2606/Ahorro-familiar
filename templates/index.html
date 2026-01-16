@@ -62,7 +62,12 @@
 
     <div class="card">
         <form method="post">
-            <input type="text" name="nombre" placeholder="Tu nombre" required>
+            <select name="nombre" required>
+    		<option value="">Selecciona quién ahorra</option>
+    		<option value="Jair">A</option>
+    		<option value="Lety">B</option>
+   		 <option value="Nataly">C</option>
+	    </select>
             <input type="number" name="monto" placeholder="Monto ahorrado" required>
             <button type="submit">Guardar ahorro</button>
         </form>
@@ -86,7 +91,15 @@
         <h3>📜 Historial</h3>
         <ul>
             {% for a in ahorros %}
-                <li>{{ a.fecha.split("T")[0] }} - {{ a.nombre }} - ${{ a.monto }}</li>
+                <li>
+  		  {{ a.fecha.split("T")[0] }} - {{ a.nombre }} - ${{ a.monto }}
+
+ 	          <form method="post" action="/borrar/{{ a.id }}" style="display:inline;">
+                      <input type="password" name="pin" placeholder="PIN" style="width:80px;">
+                      <button type="submit" style="background:#e74c3c;">✖</button>
+                  </form>
+                </li>
+
             {% endfor %}
         </ul>
     </div>

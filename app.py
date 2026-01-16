@@ -6,7 +6,18 @@ app = Flask(__name__)
 
 SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbzWBl4YmveBKCHRLXWh9RAbmedCRd7f5z8pPncMjCQz4ictUpukyc1ZiQzbm4IDHU8MGw/exec"
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/borrar/<int:id>", methods=["POST"])
+def borrar(id):
+    pin = request.form.get("pin")
+
+    params = {
+        "id": id,
+        "pin": pin
+    }
+
+    requests.delete(SHEETS_API_URL, params=params)
+    return redirect("/")
+
 def index():
     if request.method == "POST":
         nombre = request.form["nombre"].strip()
@@ -26,6 +37,8 @@ def index():
 
     response = requests.get(SHEETS_API_URL)
     ahorros = response.json()
+    for i, a in enumerate(ahorros, start=1):
+        a["id"]=i
 
     total = sum(a["monto"] for a in ahorros)
 
