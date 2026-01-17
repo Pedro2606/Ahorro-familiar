@@ -11,12 +11,14 @@ def borrar(id):
     pin = request.form.get("pin")
 
     params = {
+        "action": "delete",
         "id": id,
         "pin": pin
     }
 
-    requests.delete(SHEETS_API_URL, params=params)
+    requests.get(SHEETS_API_URL, params=params)
     return redirect("/")
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
