@@ -10,14 +10,34 @@ SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbzWBl4YmveBKCHRLXWh9RA
 def borrar(id):
     pin = request.form.get("pin")
 
+    # Volvemos a pedir los datos actuales
+    response = requests.get(SHEETS_API_URL)
+    ahorros = response.json()
+
+    if id < 1 or id > len(ahorros):
+        return redirect("/")
+
+    a = ahorros[id - 1]
+
     params = {
         "action": "delete",
-        "id": id,
-        "pin": pin
+        "pin": pin,
+        "id": id
     }
 
-    requests.get(SHEETS_API_URL, params=params)
+    # CLAVE: guardar la respuesta
+    r = requests.get(SHEETS_API_URL, params=params, timeout=20)
+
+    # CLAVE: validar respuesta
+    try:
+        result = r.json()
+        if result.get("status") != "ok":
+            print("No se borró:", result)
+    except:
+        print("Respuesta no JSON:", r.text)
+
     return redirect("/")
+
 
 
 @app.route("/", methods=["GET", "POST"])
