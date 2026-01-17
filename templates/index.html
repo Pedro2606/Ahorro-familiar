@@ -6,12 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
+        /* RESET Y FIX MOBILE */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background: #f4f6f8;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         .container {
@@ -22,29 +28,44 @@
 
         h2 {
             text-align: center;
+            margin-bottom: 16px;
         }
 
         .card {
             background: white;
             padding: 16px;
             border-radius: 8px;
-            margin-bottom: auto;
+            margin-bottom: 16px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        input, button {
+        input,
+        select,
+        button {
             width: 100%;
-            max-width: 100%;
             padding: 12px;
             margin-top: 8px;
             font-size: 16px;
+            border-radius: 8px;
+        }
+
+        input,
+        select {
+            border: 1px solid #ccc;
+            background: white;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
         }
 
         button {
             background: #2ecc71;
             border: none;
             color: white;
-            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         button:hover {
@@ -53,33 +74,51 @@
 
         ul {
             padding-left: 18px;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 6px;
         }
     </style>
 </head>
+
 <body>
 
 <div class="container">
 
     <h2>💰 Ahorro Familiar</h2>
 
+    <!-- FORMULARIO -->
     <div class="card">
         <form method="post">
             <select name="nombre" required>
-    		<option value="">Selecciona quién ahorra</option>
-    		<option value="Jair">Jair</option>
-    		<option value="Lety">Lety</option>
-   		 <option value="Nataly">Nataly</option>
-	    </select>
-            <input type="number" name="monto" placeholder="Monto ahorrado" required>
+                <option value="">Selecciona quién ahorra</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+            </select>
+
+            <input
+                type="number"
+                name="monto"
+                placeholder="Monto ahorrado"
+                required
+                min="1"
+                step="1"
+            >
+
             <button type="submit">Guardar ahorro</button>
         </form>
     </div>
 
+    <!-- TOTAL GENERAL -->
     <div class="card">
         <h3>📊 Total general</h3>
         <strong>${{ total }}</strong>
     </div>
 
+    <!-- TOTAL POR PERSONA -->
     <div class="card">
         <h3>👥 Ahorro por persona</h3>
         <ul>
@@ -89,15 +128,14 @@
         </ul>
     </div>
 
+    <!-- HISTORIAL -->
     <div class="card">
         <h3>📜 Historial</h3>
         <ul>
             {% for a in ahorros %}
                 <li>
-  		  {{ a.fecha.split("T")[0] }} - {{ a.nombre }} - ${{ a.monto }}
-
+                    {{ a.fecha.split("T")[0] }} - {{ a.nombre }} - ${{ a.monto }}
                 </li>
-
             {% endfor %}
         </ul>
     </div>
